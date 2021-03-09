@@ -1,27 +1,76 @@
 
+(setq gc-cons-threshold (* 100 1024 1024))
+(setq inhibit-startup-screen t)
+(setq inhibit-startup-echo-area-message t)
 (setq inhibit-startup-message t)
+(setq initial-scratch-message nil)
+(setq initial-major-mode 'org-mode)
+(setq-default indent-tabs-mode nil)
+
+(setq-default display-line-numbers-widen t)
+(global-display-line-numbers-mode t)
+
+(prefer-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+
+(column-number-mode t)
+(line-number-mode t)
+
+(setq pop-up-windows nil)
 
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 (tooltip-mode -1)
-(set-fringe-mode 10)
-
-
+;;(set-fringe-mode 10)
 (menu-bar-mode -1)
+
 (setq visible-bell t)
+(setq ring-bell-function 'ignore)
+(setq-default line-spacing 2)
+
+(show-paren-mode t)
 
 ;;(set-face-attribute 'default nil :font "Fira Code Retina" :height 280)
-(set-face-attribute 'default nil :font "Menlo" :height 160)
+(set-face-attribute 'default nil :font "Menlo" :height 150)
 
 ;;(load-theme 'tango-dark)
 (load-theme 'wombat)
 
+;;(use-package nord-theme
+;;  :config
+;;  (load-theme 'nord t))
+
+(use-package org)
+
+;;(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
+(setq org-directory "~/.org/")
+(setq org-default-notes-file (concat org-directory "/notes.org"))
+
+(global-set-key (kbd "C-c l") 'org-store-link)
+(global-set-key (kbd "C-c a") 'org-agenda)
+(global-set-key (kbd "C-c c") 'org-capture)
+
+
+
+(use-package magit
+  :bind
+  ("C-x g" . magit-status)
+  ("s-g" . magit-status))
+
+
+
+
+(setq auto-save-default nil)
+(auto-save-visited-mode +1)
+
+(cua-mode)
+ 
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 ;;(global-set-key (kbd "C-M-j" 'counsel-switch-buffer)
-
 		
 (setq use-package-always-ensure t)
-(setq gc-cons-threshold 100000000)
 (setq read-process-output-max (* 1024 1024)) ;; 1mb
 
 (require 'package)
@@ -119,6 +168,7 @@
         :config
         (add-hook 'c-mode-hook #'lsp)
         (add-hook 'cpp-mode-hook #'lsp)
+	(add-hook 'latex-mode-hook #'lsp)
 	(setq lsp-modeline-diagnostics-enable t)
     ;; Performance tweaks, see
     ;; https://github.com/emacs-lsp/lsp-mode#performance
@@ -139,6 +189,38 @@
   :custom
   (org-image-actual-width nil))
 
+(defvar writer-startup-message
+  "
+                           *Welcome to Emacs*
+   Emacs is the most powerful text editor on the planet. While you
+   should be able to start working with Emacs as-is, any effort you
+   put into mastering its functions will reward you handsomely. Try
+   to get familiar with the *Essential Commands* first, and move on
+       to the *Other Commands* once you've got the hang of it.
+			    *Quick Links*
+[[elisp:find-file][Create a new file]]        [[elisp:find-file-existing][Open an existing file]]        [[elisp:scratchpad][Open a scratchpad]]
+*Essential Commands*                             /C: Control, M: alt, S: ⌘/
+  Save ........... =[C-x]= =[C-s]=    Help ..................... =[C-h]=
+  Save as ........ =[C-x]= =[C-w]=    Cancel ................... =[C-g]=
+  Open new file .. =[C-x]= =[C-f]=    Undo ..................... =[C-z]=
+  Quit ........... =[C-x]= =[C-c]=    Undo (alternate) ......... =[C-/]=
+*Other Commands*                                     /[[info:emacs#Key%2520Bindings][ Other key bindings ]]/
+  Search ................. =[C-s]=    Go to line ......... =[M-g]= =[M-g]=
+  Replace ................ =[M-%]=    Execute command ............ =[M-x]=
+  
+  Start of buffer ........ =[M-<]=    End of buffer .............. =[M->]=
+  Start of line .......... =[C-a]=    End of line ................ =[C-e]=
+  Mark ................. =[C-spc]=    Copy from mark.............. =[M-w]=
+  Kill from mark.......... =[C-w]=    Kill from cursor............ =[C-k]=
+  Paste .................. =[C-y]=    Paste older ........ =[C-y]= =[M-y]=
+*Quick Preferences Settings*                         /[[elisp:(customize-group 'emacs)][ Full preferences ]]/
+ [[elisp:menu-set-font][ Select ]]default font                [[elisp:display-line-numbers-mode][ Toggle ]]line numbers
+ [[elisp:tool-bar-mode][ Toggle ]]tool bar                    [[elisp:toggle-truncate-lines][ Toggle ]]line wrap
+ [[elisp:scroll-bar-mode][ Toggle ]]scroll bar                  [[elisp:blink-cursor-mode][ Toggle ]]blinking cursor
+ [[elisp:menu-bar-mode][ Toggle ]]menu bar                     Select cursor:[[elisp:(set-default 'cursor-type  '(hbar . 2))][ HBar ]]|[[elisp:(set-default 'cursor-type  '(bar . 2))][ VBar ]]|[[elisp:(set-default 'cursor-type 'box)][ Box ]]
+")
+
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -147,7 +229,7 @@
  '(global-command-log-mode nil)
  '(ivy-mode t)
  '(package-selected-packages
-   '(general org-tree-slide company yasnippet-snippets yasnippet lsp-ui lsp-java lsp-mode plantuml plantuml-mode ivy-rich counsel doom-modeline ivy command-log-mode use-package)))
+   '(magit nord-theme general org-tree-slide company yasnippet-snippets yasnippet lsp-ui lsp-java lsp-mode plantuml plantuml-mode ivy-rich counsel doom-modeline ivy command-log-mode use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
